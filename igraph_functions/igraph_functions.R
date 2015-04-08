@@ -1,9 +1,9 @@
 ##
 #Network analysis with igraph
-#tab-delimited text file for input
-#network_fp="TYPE_FILE_NAME"
+#tab-delimited text file for input network_fp
 #must have columns: "var1", "var2", "weight", "pvalue"
-igraph.f=function(network_fp, otu_assignments_fp,name, pv_threshold=0.050){
+
+igraph.f=function(network_fp,name, pv_threshold=0.050){
   library(igraph)
   data=read.table(network_fp, header=TRUE, check.names=FALSE, set="\t")
   data2=data[(2*is.na(data[,"pvalue"])==0),]
@@ -101,3 +101,7 @@ igraph.f=function(network_fp, otu_assignments_fp,name, pv_threshold=0.050){
   print(out)
   return(out)
 }
+
+#Load the above function, then use
+#network_fp="TYPE_FILE_NAME"
+igraph.f(network_fp,name, pv_threshold)
