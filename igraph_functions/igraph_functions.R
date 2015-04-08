@@ -7,7 +7,7 @@ igraph.f=function(network_fp,name, pv_threshold=0.050){
   library(igraph)
   data=read.table(network_fp, header=TRUE, check.names=FALSE, sep="\t")
   data2=data[(2*is.na(data[,"pvalue"])==0),]
-  data2.5=data2[round(data2[,"pvalue"],digits=3)<=pv_threshol,]
+  data2.5=data2[round(data2[,"pvalue"],digits=3)<=pv_threshold,]
   data3=data2.5[,1:3]
   colnames(data3)=c("var1", "var2", "weight")
   g=graph.data.frame(data3,directed=FALSE)
@@ -50,7 +50,7 @@ igraph.f=function(network_fp,name, pv_threshold=0.050){
   
   #power law exponent, alpha, fit to the degree distribution
   p=power.law.fit(pk)
-  alpha=p@coef
+  alpha=p$coef
   
   #power law exponent, alpha, fit to the cumulative degree distribution, so add 1
   dd=degree.distribution(g, cumulative=TRUE)
