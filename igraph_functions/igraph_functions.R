@@ -57,19 +57,34 @@ igraph.f=function(network_fp,name, pv_threshold=0.050){
   power.law.fit(dd+1)
   
   #degree correlation coefficient: (do high/low -degree nodes preferentially associated with each other?, Pearson's correlation approach where positive number is assortative, negative is disassortative, from Table 2, value   in Newman
-  node.names=as.vector(unlist(g[[9]][[3]]))
+  #node.names=as.vector(unlist(g[[9]][[3]]))
+  #node.names=V(g)
   node.degrees=pk
   edgelist=get.edgelist(g)
   
-  degree.edge1=NULL
-  for(i in 1:length(edgelist[,1])){
-    degree.edge1[i]=node.degrees[edgelist[i,1]==node.names]
+  el1=NULL
+  el2=NULL
+  for (i in 1:nrow(edgelist)){
+    for (j in 1:length(node.degrees)){
+      if (edgelist[i,1]==names(node.degrees)[j]){
+        el1[i]=node.degrees[j]
+        
+      }
+      if (edgelist[i,2]==names(node.degrees)[j]){
+        el2[i]=node.degrees[j]
+      }
+    }
   }
   
-  degree.edge2=NULL
-  for(i in 1:length(edgelist[,2])){
-    degree.edge2[i]=node.degrees[edgelist[i,2]==node.names]
-  }
+  degree.edge1=el1
+#  for(i in 1:length(edgelist[,1])){
+#    degree.edge1[i]=node.degrees[edgelist[i,1]==node.names]
+#  }
+  
+   degree.edge2=el2
+#  for(i in 1:length(edgelist[,2])){
+#    degree.edge2[i]=node.degrees[edgelist[i,2]==node.names]
+#  }
   
   PearsCor=cor.test(degree.edge1, degree.edge2, method="pearson", conf.level=0.95)
   r=PearsCor$estimate
