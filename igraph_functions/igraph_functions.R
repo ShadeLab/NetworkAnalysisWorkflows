@@ -5,7 +5,7 @@
 
 igraph.f=function(network_fp,name, pv_threshold=0.050){
   library(igraph)
-  data=read.table(network_fp, header=TRUE, check.names=FALSE, set="\t")
+  data=read.table(network_fp, header=TRUE, check.names=FALSE, sep="\t")
   data2=data[(2*is.na(data[,"pvalue"])==0),]
   data2.5=data2[round(data2[,"pvalue"],digits=3)<=pv_threshol,]
   data3=data2.5[,1:3]
