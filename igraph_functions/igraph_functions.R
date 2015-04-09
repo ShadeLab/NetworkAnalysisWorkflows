@@ -3,12 +3,13 @@
 #tab-delimited text file for input network_fp
 #must have columns: "var1", "var2", "weight", "pvalue"
 
-igraph.f=function(network_fp,name, pv_threshold=0.050){
+igraph.f=function(network_fp,name, pv_threshold=0.050, wt_threshold=0){
   library(igraph)
   data=read.table(network_fp, header=TRUE, check.names=FALSE, sep="\t")
   data2=data[(2*is.na(data[,"pvalue"])==0),]
-  data2.5=data2[round(data2[,"pvalue"],digits=3)<=pv_threshold,]
-  data3=data2.5[,1:3]
+  data2.1=data2[round(data2[,"pvalue"],digits=3)<=pv_threshold,]
+  data2.2=data2.1[data2.1[,"weight"]>=wt_threshold,]
+  data3=data2.2[,1:3]
   colnames(data3)=c("var1", "var2", "weight")
   g=graph.data.frame(data3,directed=FALSE)
   
@@ -18,10 +19,10 @@ igraph.f=function(network_fp,name, pv_threshold=0.050){
   
   print(summary.igraph(g))
   #no. nodes
-  n=g[1]
+  n=length(V(g))
   
   #no edges
-  m=length(g[3][[1]])
+  m=length(E(g))
   
   
   #number of cliques?
@@ -50,7 +51,7 @@ igraph.f=function(network_fp,name, pv_threshold=0.050){
   
   #power law exponent, alpha, fit to the degree distribution
   p=power.law.fit(pk)
-  alpha=p$coef
+  alpha=p$alpha
   
   #power law exponent, alpha, fit to the cumulative degree distribution, so add 1
   dd=degree.distribution(g, cumulative=TRUE)
@@ -109,14 +110,15 @@ igraph.f=function(network_fp,name, pv_threshold=0.050){
   
   #output
   out=c(n,m,z,d,l.mean,alpha,C,r, r.p)
-  out=unlist(out)
+  #out=unlist(out)
   names(out)=c("No_Nodes_n", "No_Edges_m","Mean_degree","Diameter", "Mean_geodesic_l","PwrLawAlpha", "ClusteringCoef_C", "PearsonR", "Pearson_pvalue")
   
-  write.table(t(out), paste("MINE_",name, "_MIC_networkStats.txt",sep=""), sep="\t", quote=FALSE, row.names=FALSE)
+  write.table(t(out), paste(name, "_networkStats.txt",sep=""), sep="\t", quote=FALSE, row.names=FALSE)
   print(out)
   return(out)
 }
 
 #Load the above function, then use
 #network_fp="TYPE_FILE_NAME"
-igraph.f(network_fp,name, pv_threshold)
+network_fp="JH_OTUs_nosigs2_mine2Cyto_20150409.txt"
+igraph.f(network_fp,name="JH_MINE_20150409_igraph", pv_threshold=0.050, wt_threshold=0)
