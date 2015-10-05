@@ -3,6 +3,9 @@
 #tab-delimited text file for input network_fp
 #must have columns: "var1", "var2", "weight", "pvalue"
 
+#network_fp="TYPE_FILE_NAME"
+network_fp="ARISA_CenL4_PQsorted.txt"
+
 igraph.f=function(network_fp,name, pv_threshold=0.050, wt_threshold=0){
   library(igraph)
   data=read.table(network_fp, header=TRUE, check.names=FALSE, sep="\t")
@@ -16,8 +19,8 @@ igraph.f=function(network_fp,name, pv_threshold=0.050, wt_threshold=0){
   
   #diameter
   d=diameter(g)
-  
-  print(summary.igraph(g))
+  igraph_opt(g, default = NULL)
+  #print(summary.igraph(g))
   #no. nodes
   n=length(V(g))
   
@@ -119,6 +122,4 @@ igraph.f=function(network_fp,name, pv_threshold=0.050, wt_threshold=0){
 }
 
 #Load the above function, then use
-#network_fp="TYPE_FILE_NAME"
-network_fp="JH_OTUs_nosigs2_mine2Cyto_20150409.txt"
-igraph.f(network_fp,name="JH_MINE_20150409_igraph", pv_threshold=0.050, wt_threshold=0)
+igraph.f(network_fp,name="ARISA_CenL4_igraph", pv_threshold=0.050, wt_threshold=0)
